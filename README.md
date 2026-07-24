@@ -2,173 +2,178 @@
 
 # Credit Assessment AI
 
-### A privacy-first portfolio demonstration of intelligent loan assessment
+### A transparent, credential-free demonstration of human-reviewed lending decision support
 
-A credential-free React application that demonstrates document intake,
-serviceability analysis, risk indicators and explainable assessment output.
+A React and TypeScript application that converts applicant inputs and selected document categories into deterministic financial ratios, evidence-completeness signals and an explainable review recommendation.
 
-`React` · `TypeScript` · `Vite` · `Financial Workflow Design` · `Privacy by Design`
+`React` · `TypeScript` · `Vite` · `Deterministic calculations` · `Privacy by design`
 
 </div>
 
 ---
 
-## Overview
+## Evidence snapshot
 
-**Credit Assessment AI** demonstrates how a lender-facing application can turn applicant information and document completeness into a structured, review-ready assessment.
-
-The public application is deliberately self-contained. It does not connect to a production database, AI provider, storage bucket or customer system. Instead, it uses transparent local calculations so recruiters and reviewers can inspect the full decision flow without requiring shared credentials.
-
-The workflow includes:
-
-- Applicant and loan data entry
-- Local document selection and categorisation
-- Document-completeness checks
-- Debt-to-income and monthly-commitment calculations
-- Explainable risk indicators
-- A structured review recommendation
-- Privacy and responsible-use safeguards
-
-## Why This Public Version Is Different
-
-The original internal prototype explored AI-assisted extraction and assessment workflows. This public repository is a sanitised portfolio release designed to prevent credential or customer-data exposure.
-
-It therefore:
-
-- Requires no API tokens
-- Requires no environment configuration
-- Contains no Supabase project identifiers
-- Contains no Google or AI-provider credentials
-- Does not upload selected files
-- Does not read document contents
-- Contains no production applicant records
-- Uses fresh Git history unrelated to the private development repository
-
-## Application Flow
-
-```text
-Applicant details
-      ↓
-Local document selection
-      ↓
-Document category coverage
-      ↓
-Financial ratio calculations
-      ↓
-Transparent risk rules
-      ↓
-Review recommendation and explanations
-```
-
-## Assessment Signals
-
-| Signal | Purpose |
+| Area | Current public implementation |
 |---|---|
-| Debt-to-income ratio | Compares existing debt with annual income |
-| Monthly commitment ratio | Estimates the share of monthly income committed to debt servicing |
-| Loan-to-income ratio | Provides context for the requested amount |
-| Document completeness | Checks whether core evidence categories have been selected |
-| Review indicators | Explains which factors increased or reduced review risk |
+| Runtime | Browser-only React application |
+| External services | None |
+| File handling | Local metadata only; file contents are not read or uploaded |
+| Assessment logic | Transparent TypeScript calculations and rules |
+| Outputs | Review-support recommendation, ratios, completeness, strengths and indicators |
+| Decision boundary | No automated approval, decline or pricing |
+| Build verification | GitHub Actions production build workflow |
 
-The output is designed as **decision support**, not an automated credit decision.
+## Relationship to Assess Swift AI
 
-## Privacy Model
+This repository is a deliberately sanitised public portfolio demonstration.
 
-Selected files remain on the user's device. The browser exposes only basic metadata to the application:
+The private **Assess Swift AI** repository contains a substantially broader document-processing and infrastructure programme. This public project does **not** claim to reproduce its private backend, extraction providers, database, Storage, security controls or current pull-request stack.
 
-- Filename
-- File size
-- File type
-- User-selected category
+Its purpose is to make the central workflow and responsible-decision boundary inspectable without exposing credentials, applicant data or private implementation details.
 
-The application does not read file contents or send information over a network.
-
-## Project Structure
+## Application flow
 
 ```text
-credit-assessment-ai/
-├── docs/
-│   └── ARCHITECTURE.md
-├── src/
-│   ├── App.tsx
-│   ├── assessment.ts
-│   ├── index.css
-│   ├── main.tsx
-│   └── vite-env.d.ts
-├── .gitignore
-├── SECURITY.md
-├── index.html
-├── package.json
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
-└── vite.config.ts
+Applicant financial inputs
+        ↓
+Local document selection
+        ↓
+Filename-based category suggestion
+        ↓
+User-confirmed evidence categories
+        ↓
+Deterministic financial calculations
+        ↓
+Transparent risk and completeness rules
+        ↓
+Human review recommendation + explanations
 ```
 
-## Local Setup
+## Current assessment signals
 
-### 1. Clone the repository
+The application calculates:
+
+| Signal | Current calculation |
+|---|---|
+| Debt-to-income | Existing debt as a percentage of annual income |
+| Monthly commitment ratio | Estimated repayment, existing-debt allowance and living expenses relative to monthly income |
+| Loan-to-income | Requested amount divided by annual income |
+| Document completeness | Weighted coverage of bank, income, identification, liability and other evidence categories |
+| Estimated repayment | Amortising repayment using the demonstration interest-rate assumption |
+
+The current public code returns one of three workflow recommendations:
+
+- `Proceed to review`
+- `Manual review recommended`
+- `Additional information required`
+
+These are triage labels for a reviewer, not credit decisions.
+
+## Document privacy model
+
+Selected files remain on the user's device. The application uses only:
+
+- filename;
+- size;
+- declared browser MIME type;
+- user-confirmed document category.
+
+It does not:
+
+- read document bytes;
+- extract document text;
+- send selected information to a server;
+- connect to Supabase or another database;
+- include production applicants or credentials.
+
+Filename-based category inference is a convenience feature and can be corrected by the user.
+
+## Why the logic is explicit
+
+The assessment engine lives in [`src/assessment.ts`](src/assessment.ts). The formulas, category weights, thresholds and recommendation mapping are readable TypeScript rather than hidden behind a hosted model call.
+
+That makes it possible to inspect:
+
+- which inputs affect each output;
+- the assumptions used in estimated repayments;
+- why a risk indicator was added;
+- which document categories are missing;
+- why a case was routed to additional or manual review.
+
+The values are demonstration rules, not independently validated lending policy.
+
+## Local setup
 
 ```bash
 git clone https://github.com/Lukeyone/credit-assessment-ai.git
 cd credit-assessment-ai
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
-```
-
-### 3. Run the development server
-
-```bash
 npm run dev
 ```
 
-Open the local URL shown by Vite.
-
-### 4. Validate a production build
+Validate a production build:
 
 ```bash
 npm run build
 ```
 
-No environment file or external account is required.
+No environment file, API key or external account is required.
 
-## Responsible Use
+## Repository structure
 
-This project is an educational and portfolio demonstration. It must not be used to approve, decline or price real credit applications.
+```text
+credit-assessment-ai/
+├── .github/workflows/build.yml
+├── docs/ARCHITECTURE.md
+├── src/
+│   ├── App.tsx
+│   ├── assessment.ts
+│   ├── index.css
+│   └── main.tsx
+├── SECURITY.md
+├── package.json
+└── README.md
+```
+
+## Responsible use
+
+This repository is an educational and portfolio demonstration. It must not be used to approve, decline, price or otherwise determine a real credit application.
 
 A production system would require, at minimum:
 
-- Independently validated risk models
-- Regulatory and legal review
-- Human oversight
-- Bias and fairness testing
-- Adverse-action and explanation processes
-- Secure document storage and retention controls
-- Identity, access and audit controls
-- Model monitoring and change governance
+- approved lending policy and independently validated calculations;
+- legal and regulatory review;
+- adverse-action and explanation processes;
+- bias and fairness testing;
+- secure identity, access, storage, retention and audit controls;
+- representative evaluation data;
+- monitoring, incident response and change governance;
+- authorised human decision makers.
 
-## Planned Improvements
+## Verified limitations
 
-- Add automated tests for the assessment engine
-- Add accessibility testing
-- Add downloadable demonstration reports
-- Add synthetic test scenarios
-- Add a documented production threat model
-- Add a secure backend reference architecture without shared credentials
+- The repayment interest rate and existing-debt payment allowance are demonstration assumptions.
+- Filename inference is not document classification.
+- Completeness measures category coverage, not authenticity or evidentiary quality.
+- The rule thresholds are not approved lender policy.
+- There is no backend, persistent account or document-processing service.
+- The current build workflow validates compilation, not complete behavioural correctness.
 
-## Background
+## Portfolio context
 
-This portfolio project represents experience designing AI-assisted credit assessment workflows, including document intake, anomaly-oriented review, structured summaries and privacy-conscious processing.
+This public project demonstrates:
 
-The public repository focuses on the workflow and engineering decisions while deliberately excluding operational credentials, production infrastructure and real applicant information.
+- translating a sensitive commercial workflow into a safe public artefact;
+- deterministic financial and completeness calculations;
+- explainable review-oriented output;
+- privacy-preserving local file handling;
+- React/TypeScript interface engineering;
+- explicit separation between decision support and consequential decisions.
 
 ## Author
 
 **Lachlan McDonald**  
-Applied AI Engineer · Software Engineer · Data Scientist
+Applied AI & Machine Learning Engineer · Software Engineer
 
-[LinkedIn](https://www.linkedin.com/in/lachlanmcdonaldtech) · [Email](mailto:lachornot@gmail.com)
+[Portfolio](https://lukeyone.github.io) · [LinkedIn](https://www.linkedin.com/in/lachlanmcdonaldtech) · [Email](mailto:lachlanmcdonald2000@gmail.com)
